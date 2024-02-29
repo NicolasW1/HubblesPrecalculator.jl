@@ -18,7 +18,7 @@ function hexagonal_brillouin(T::Type)
 
     area = 6 * s^2 * corner_length
 
-    BrillouinZone((Γ = Γ, K₊ = K₊, K₋ = K₋, M₁ = M₁), [c_RT, c_MT, c_LT, c_LB, c_MB, c_RB], area)
+    BrillouinZone((Γ = Γ, K₊, K₋, M₁), [c_RT, c_MT, c_LT, c_LB, c_MB, c_RB], area)
 end
 
 hexagonal_brillouin(Float64)
