@@ -1,5 +1,8 @@
 module HubblesPrecalculator
 
-# Write your package code here.
+using StaticArrays
+
+include("brillouin_zones/general.jl")
+include("brillouin_zones/hexagonal.jl")
 
 end
