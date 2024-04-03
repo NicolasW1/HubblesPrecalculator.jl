@@ -3,11 +3,10 @@ module HubblesPrecalculator
 using StaticArrays
 using Dates
 
-using HubblesPrerequisites
+include("abstract_types.jl")
 export AbstractModel, AbstractParameter, Bubble
+include("occupation_numbers.jl")
 export TnFp, ∂¹aTnFp, ∂³aTnFp
-export ExternalInput
-# export everything for now (move into this module...)
 
 include("brillouin_zones/general.jl")
 include("brillouin_zones/hexagonal.jl")
@@ -16,7 +15,7 @@ include("solver.jl")
 
 export BrillouinZone
 export hexagonal_brillouin, hexagonal_wedge_momenta
-export PrecalculationParameter
+export PrecalculationParameter, ExternalInput
 export evaluateBubble!, update_discretization!, getResult!, generateLambdaGrid, run_precalculation
 
 export testF

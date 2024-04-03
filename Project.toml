@@ -5,7 +5,6 @@ version = "1.0.0-DEV"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
-HubblesPrerequisites = "0e587a0b-3c6a-471f-9f17-a8871fd4a511"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]

@@ -1,3 +1,9 @@
+struct ExternalInput{T,X,P}
+    qₑₓₜ::SVector{2,T}
+    ffs::X
+    params::P
+end
+
 struct PrecalculationParameter{T, I, N}
     logΛₘᵢₙ::T
     logΛₘₐₓ::T
