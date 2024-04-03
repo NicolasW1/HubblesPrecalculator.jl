@@ -21,8 +21,6 @@ function hexagonal_brillouin(T::Type)
     BrillouinZone((Γ = Γ, K₊, K₋, M₁), [c_RT, c_MT, c_LT, c_LB, c_MB, c_RB], area)
 end
 
-hexagonal_brillouin(Float64)
-
 """
     hexagonal_wedge_momenta(n, T::Type=Float64)
 

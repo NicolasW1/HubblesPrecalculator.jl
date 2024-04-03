@@ -1,10 +1,10 @@
-function evaluateBubble(result, bubbleType::Type{Q}, discretization, externalParams::ExternalInput{T, X, P}) where {Q,T,X,P}
+function evaluateBubble!(result, bubbleType::Type{Q}, discretization, externalParams) where {Q}
     # TODO:
     # write the function
     return 1.0
 end
 
-function update_discretization(integrator, genParams, bubble::Type, extParams)
+function update_discretization!(integrator, genParams, bubble::Type, extParams)
     println("--------------------------------------------------")
     println("Precalculating refinement for logΛ = $(log10(extParams.Λ))")
 
@@ -29,7 +29,7 @@ function getResult!(result, bubbleType::Type, discretization, extParams)
 
     println(" Calculating result for logΛ = $(log10(extParams.Λ))")
 
-    err = evaluateBubble(result, bubbleType, discretization, extParams)
+    err = evaluateBubble!(result, bubbleType, discretization, extParams)
 
     println("     Took : " * Dates.format(convert(DateTime, now() - starttime), "HH:MM:SS.sss"))
 
@@ -46,57 +46,63 @@ end
 
 ###################################################################
 
-function generateAll(genParams::GenerateParameter{T,I}, bubble::Type, extParams) where {T,I}
+function testF(x)
+    return x
+end
+
+function run_precalculation(model, genParams::PrecalculationParameter{T,I}, bubble::Type, extParams) where {T,I}
     start_time = now()
 
-    # file output
-    if genParams.saveOutput
-        outputDict = generateSaveDict(bubble, genParams, extParams)
-        outputFilePath = joinpath(outputFolder(extParams), filePath(bubble, extParams))
-    end
+    return testF(1)
 
-    # Λ grids
-    precalcLogLambdas = reverse(collect(genParams.logΛₘᵢₙ : genParams.ΔlogΛ : genParams.logΛₘₐₓ))
-    interpLogLambdas = reverse(generateLambdaGrid(genParams.logΛₘᵢₙ, genParams.logΛₘₐₓ, genParams.order))
-    num_evals=similar(precalcLogLambdas, Int)
+    # # file output
+    # if genParams.saveOutput
+    #     outputDict = generateSaveDict(bubble, genParams, extParams)
+    #     outputFilePath = joinpath(outputFolder(extParams), filePath(bubble, extParams))
+    # end
 
-    # result collection
-    results = zeros(Complex{T}, length(extParams.ffs), length(interpLogLambdas))
-    errors = zeros(T, length(interpLogLambdas))
+    # # Λ grids
+    # precalcLogLambdas = reverse(collect(genParams.logΛₘᵢₙ : genParams.ΔlogΛ : genParams.logΛₘₐₓ))
+    # interpLogLambdas = reverse(generateLambdaGrid(genParams.logΛₘᵢₙ, genParams.logΛₘₐₓ, genParams.order))
+    # num_evals=similar(precalcLogLambdas, Int)
 
-    # integration
-    integration_domain = full_refine(generate_domain(), genParams.init_refinement)
-    integrator = SCubatureFactory(Float64, integration_domain)
-    interp_index = 1
+    # # result collection
+    # results = zeros(Complex{T}, length(extParams.ffs), length(interpLogLambdas))
+    # errors = zeros(T, length(interpLogLambdas))
 
-    for (precalc_index, pre_logΛ) in enumerate(precalcLogLambdas)
-        update_discretization(integrator, genParams, bubble, ExternalInput(extParams, 10^pre_logΛ))
-        num_evals
+    # # integration
+    # integration_domain = full_refine(generate_domain(), genParams.init_refinement)
+    # integrator = SCubatureFactory(Float64, integration_domain)
+    # interp_index = 1
 
-        if genParams.calcInterp
-            while interp_index <= length(interpLogLambdas) && interpLogLambdas[interp_index] >= pre_logΛ
-                interp_logΛ = interpLogLambdas[interp_index]
-                local_res = @view results[:, interp_index]
+    # for (precalc_index, pre_logΛ) in enumerate(precalcLogLambdas)
+    #     update_discretization!(integrator, genParams, bubble, ExternalInput(extParams, 10^pre_logΛ))
+    #     num_evals
 
-                errors[interp_index] = getResult!(local_res, bubble, integrator.init_geo_refinement, ExternalInput(extParams, 10^interp_logΛ))
+    #     if genParams.calcInterp
+    #         while interp_index <= length(interpLogLambdas) && interpLogLambdas[interp_index] >= pre_logΛ
+    #             interp_logΛ = interpLogLambdas[interp_index]
+    #             local_res = @view results[:, interp_index]
 
-                if genParams.saveOutput
-                    appendData!(outputDict, interp_logΛ, local_res, errors[interp_index])
-                end
+    #             errors[interp_index] = getResult!(local_res, bubble, integrator.init_geo_refinement, ExternalInput(extParams, 10^interp_logΛ))
 
-                interp_index += 1
-            end
-        end
-    end
+    #             if genParams.saveOutput
+    #                 appendData!(outputDict, interp_logΛ, local_res, errors[interp_index])
+    #             end
 
-    # save output
-    if genParams.saveOutput
-        open(outputFilePath * ".json", "w") do io
-            JSON3.pretty(io, outputDict)
-        end
-    end
+    #             interp_index += 1
+    #         end
+    #     end
+    # end
 
-    println("Total evaluation time : " * Dates.format(convert(DateTime, now() - start_time), "HH:MM:SS"))
+    # # save output
+    # if genParams.saveOutput
+    #     open(outputFilePath * ".json", "w") do io
+    #         JSON3.pretty(io, outputDict)
+    #     end
+    # end
 
-    results, errors
+    # println("Total evaluation time : " * Dates.format(convert(DateTime, now() - start_time), "HH:MM:SS"))
+
+    # results, errors
 end
