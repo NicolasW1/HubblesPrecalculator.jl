@@ -46,14 +46,8 @@ end
 
 ###################################################################
 
-function testF(x)
-    return x
-end
-
 function run_precalculation(model, genParams::PrecalculationParameter{T,I}, bubble::Type, extParams) where {T,I}
     start_time = now()
-
-    return testF(1)
 
     # # file output
     # if genParams.saveOutput
