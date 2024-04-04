@@ -9,6 +9,7 @@ Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+Format = "1"
 StaticArrays = "1"
 julia = "1.9"
 
